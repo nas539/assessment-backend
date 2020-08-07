@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 import io
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = ""
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://tvjcfzziiaesyq:ef0348e4911ede21bfb30a7e50a365303ed274def202f9632ad6aba7162f1991@ec2-52-22-216-69.compute-1.amazonaws.com:5432/d2jmntqd7sqea9"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -22,13 +22,14 @@ class Movie(db.Model):
     year = db.Column(db.Integer(), nullable=False)
     # Example: PG-13
     rated = db.Column(db.String(20), nullable=False)
-    released_on = db.Column(Date(), nullable=False)
-    genre = db.Column(db.String(409), nullable=False)
+    released_on = db.Column(db.Date(), nullable=False)
+    genre = db.Column(db.String(40), nullable=False)
     director = db.Column(db.String(50), nullable=False)
     plot = db.Column(db.String(3000), nullable=False)
     rating = db.Column(db.Integer(), nullable=True)
+    count = db.Column(db.Integer(), nullable=True)
     
-    def __init__(self, title, year, rated, released_on, genre, director, plot, rating):
+    def __init__(self, title, year, rated, released_on, genre, director, plot, rating, count):
         self.title = title
         self.year = year
         self.rated = rated
@@ -37,10 +38,11 @@ class Movie(db.Model):
         self.director = director
         self.plot = plot
         self.rating = rating
+        self.count = count
 
 class MovieSchema(ma.Schema):
     class Meta:
-        fields = ("id", "title", "year", "rated", "released_on", "genre", "director", "plot", "rating")
+        fields = ("id", "title", "year", "rated", "released_on", "genre", "director", "plot", "rating", "count")
 
 movie_schema = MovieSchema()
 movies_schema = MovieSchema(many=True)
