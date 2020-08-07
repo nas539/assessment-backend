@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 import io
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = ""
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://axsgcanmprtycq:2c1bc41c2445028e5c0b8bbd85041320e43975615fb7aac90887e97646017e2b@ec2-34-200-15-192.compute-1.amazonaws.com:5432/d3mjgenn8a0rf9"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -47,7 +47,26 @@ class MovieSchema(ma.Schema):
 movie_schema = MovieSchema()
 movies_schema = MovieSchema(many=True)
 
+@app.route("/movie/add", methods=["POST"])
+def movie_add():
+    if rquest.content_type != "application.json":
+        return jsonify("Error")
 
+    post_data = request.get_json()
+    title = post_data.get("title")
+    year = post_data.get("year")
+    rated = post_data.get("rated")
+    released_on = post_data.get("realesed_on")
+    genre = post_data.get("genre")
+    director = post_data.get("director")
+    plot = post_data.get("plot")
+
+    return jsonify("Movie added")
+    
+@app.route("/movies/get", methods=["GET"])
+def get_movies_data():
+    movies_data = db.session.query(Movie).all()
+    return jsonify(movies_schema.dump(movies_data))
 
 if __name__ == "__main__":
     app.run(debug=True)
