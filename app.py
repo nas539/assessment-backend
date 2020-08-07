@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 import io
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://axsgcanmprtycq:2c1bc41c2445028e5c0b8bbd85041320e43975615fb7aac90887e97646017e2b@ec2-34-200-15-192.compute-1.amazonaws.com:5432/d3mjgenn8a0rf9"
+app.config["SQLALCHEMY_DATABASE_URI"] = ""
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -22,10 +22,10 @@ class Movie(db.Model):
     year = db.Column(db.Integer(), nullable=False)
     # Example: PG-13
     rated = db.Column(db.String(20), nullable=False)
-    released_on = db.Column(db.Date(), nullable=False)
-    genre = db.Column(db.String(40), nullable=False)
+    released_on = db.Column(db.String(20), nullable=False)
+    genre = db.Column(db.String(50), nullable=False)
     director = db.Column(db.String(50), nullable=False)
-    plot = db.Column(db.String(3000), nullable=False)
+    plot = db.Column(db.String(4000), nullable=False)
     rating = db.Column(db.Integer(), nullable=True)
     count = db.Column(db.Integer(), nullable=True)
     
@@ -49,8 +49,8 @@ movies_schema = MovieSchema(many=True)
 
 @app.route("/movie/add", methods=["POST"])
 def movie_add():
-    if rquest.content_type != "application.json":
-        return jsonify("Error")
+    # if request.content_type != "application.json":
+    #     return jsonify("Error")
 
     post_data = request.get_json()
     title = post_data.get("title")
