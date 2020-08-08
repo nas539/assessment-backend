@@ -64,9 +64,6 @@ users_schema = UserSchema(many=True)
 
 @app.route("/movie/add", methods=["POST"])
 def movie_add():
-    if request.content_type != "application.json":
-        return jsonify("Error")
-
     post_data = request.get_json()
     title = post_data.get("title")
     year = post_data.get("year")
@@ -86,6 +83,25 @@ def movie_add():
 def get_movies_data():
     movies_data = db.session.query(Movie).all()
     return jsonify(movies_schema.dump(movies_data))
+
+@app.route("/movie/get/<id>", methods=["GET"])
+def get_movie(id):
+    movie_data = db.session.query(Movie).filter(Movie.id == id).first()
+    return jsonify(movie_data)
+
+@app.route("/movie/delete/<id>", methods=["DELETE"])
+def delete_movie(id):
+    movie_data = db.session.query(Movie).filter(Movie.id == id).first()
+    db.session.delete(movie_data)
+    db.session.commit()
+    return jsonify("Movie Deleted")
+
+@app.route("/movie/update/<id>", methods=["PUT"])
+def update_movie(id):
+    movie_data = db.session.query(Movie).filter(Movie.id == id).first()
+    db.session.put(movie_data)
+    db.session.commit()
+    return jsonify("Movie updated")
 
 @app.route("/user/add", methods=["POST"])
 def create_user():
