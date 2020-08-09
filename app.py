@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 import io
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = ""
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://cguzrfeviaywsh:1dfa744f2cebe2db555daa9bb5ef450d7baa6efd37b17b6df0124531f9b845eb@ec2-107-22-7-9.compute-1.amazonaws.com:5432/d6p771rjqjo6u4"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -49,7 +49,7 @@ movies_schema = MovieSchema(many=True)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.DateField(), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
 
     def __init__(self, username, password):
         self.username = username
