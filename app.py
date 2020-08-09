@@ -8,7 +8,6 @@ import io
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = ""
-
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
@@ -21,26 +20,50 @@ class Movie(db.Model):
     title = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer(), nullable=False)
     rated = db.Column(db.String(20), nullable=False)
-    released_on = db.Column(db.Date(), nullable=False)
+    released = db.Column(db.String(100), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
     director = db.Column(db.String(50), nullable=False)
     plot = db.Column(db.String(4000), nullable=False)
+    movies = db.relationship("Movie", cascade="all,delete", backref="user", lazy=True)
+
     
-    def __init__(self, title, year, rated, released_on, genre, director, plot):
+    def __init__(self, title, year, rated, released, genre, director, plot):
         self.title = title
         self.year = year
         self.rated = rated
-        self.released_on = released_on
+        self.released = released
         self.genre = genre
         self.director = director
         self.plot = plot
         
 class MovieSchema(ma.Schema):
     class Meta:
-        fields = ("id", "title", "year", "rated", "released_on", "genre", "director", "plot")
+        fields = ("id", "title", "year", "rated", "released", "genre", "director", "plot")
 
 movie_schema = MovieSchema()
 movies_schema = MovieSchema(many=True)
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    count = db.Column(db.Integer(), nullable=False)
+    total = db.Column(db.Integer(), nullable=False)
+    rating = db.Column(db.Float(), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id"), nullable=False)
+
+    
+    def __init__(self, count, total, rating, movie_id):
+        self.count = count
+        self.total = total
+        self.rating = rating
+        self.movie_id = movie_id
+        
+        
+class ReviewSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "count", "total", "rating", "movie_id")
+
+review_schema = ReviewSchema()
+reviews_schema = ReviewSchema(many=True)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,13 +87,13 @@ def movie_add():
     title = post_data.get("title")
     year = post_data.get("year")
     rated = post_data.get("rated")
-    released_on = post_data.get("realesed_on")
+    released = post_data.get("realesed")
     genre = post_data.get("genre")
     director = post_data.get("director")
     plot = post_data.get("plot")
     
 
-    new_movie = Movie(title, year, rated, released_on, genre, director, plot)
+    new_movie = Movie(title, year, rated, released, genre, director, plot)
     db.session.add(new_movie)
     db.session.commit()
 
