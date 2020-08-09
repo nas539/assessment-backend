@@ -21,14 +21,12 @@ class Movie(db.Model):
     title = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer(), nullable=False)
     rated = db.Column(db.String(20), nullable=False)
-    released_on = db.Column(db.Date(), nullable=False)
+    released_on = db.Column(db.String(40), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
     director = db.Column(db.String(50), nullable=False)
     plot = db.Column(db.String(4000), nullable=False)
-    rating = db.Column(db.Integer(), nullable=True)
-    count = db.Column(db.Integer(), nullable=True)
     
-    def __init__(self, title, year, rated, released_on, genre, director, plot, rating, count):
+    def __init__(self, title, year, rated, released_on, genre, director, plot):
         self.title = title
         self.year = year
         self.rated = rated
@@ -36,12 +34,10 @@ class Movie(db.Model):
         self.genre = genre
         self.director = director
         self.plot = plot
-        self.rating = rating
-        self.count = count
-
+        
 class MovieSchema(ma.Schema):
     class Meta:
-        fields = ("id", "title", "year", "rated", "released_on", "genre", "director", "plot", "rating", "count")
+        fields = ("id", "title", "year", "rated", "released_on", "genre", "director", "plot")
 
 movie_schema = MovieSchema()
 movies_schema = MovieSchema(many=True)
@@ -72,6 +68,7 @@ def movie_add():
     genre = post_data.get("genre")
     director = post_data.get("director")
     plot = post_data.get("plot")
+    
 
     new_movie = Movie(title, year, rated, released_on, genre, director, plot)
     db.session.add(new_movie)
