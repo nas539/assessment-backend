@@ -21,7 +21,7 @@ class Movie(db.Model):
     title = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer(), nullable=False)
     rated = db.Column(db.String(20), nullable=False)
-    released_on = db.Column(db.String(40), nullable=False)
+    released_on = db.Column(db.Date(), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
     director = db.Column(db.String(50), nullable=False)
     plot = db.Column(db.String(4000), nullable=False)
