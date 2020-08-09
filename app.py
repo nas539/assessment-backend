@@ -24,7 +24,7 @@ class Movie(db.Model):
     genre = db.Column(db.String(50), nullable=False)
     director = db.Column(db.String(50), nullable=False)
     plot = db.Column(db.String(4000), nullable=False)
-    movies = db.relationship("Movie", cascade="all,delete", backref="user", lazy=True)
+    reviews = db.relationship("Review", cascade="all,delete", backref="user", lazy=True)
 
     
     def __init__(self, title, year, rated, released, genre, director, plot):
