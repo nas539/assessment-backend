@@ -47,20 +47,18 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer(), nullable=False)
     total = db.Column(db.Integer(), nullable=False)
-    rating = db.Column(db.Float(), nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey("movie.id"), nullable=False)
 
     
-    def __init__(self, count, total, rating, movie_id):
+    def __init__(self, count, total, movie_id):
         self.count = count
         self.total = total
-        self.rating = rating
         self.movie_id = movie_id
         
         
 class ReviewSchema(ma.Schema):
     class Meta:
-        fields = ("id", "count", "total", "rating", "movie_id")
+        fields = ("id", "count", "total", "movie_id")
 
 review_schema = ReviewSchema()
 reviews_schema = ReviewSchema(many=True)
@@ -87,7 +85,7 @@ def movie_add():
     title = post_data.get("title")
     year = post_data.get("year")
     rated = post_data.get("rated")
-    released = post_data.get("realesed")
+    released = post_data.get("released")
     genre = post_data.get("genre")
     director = post_data.get("director")
     plot = post_data.get("plot")
@@ -166,6 +164,18 @@ def verify_user():
         return jsonify("User not Verified")
 
     return jsonify("User verified")
+
+@app.route("/rating/add/<id>", methods=["POST"])
+def rating_add(id):
+    post_data = request.get_json()
+    total= post_data.get("total")
+    count = post_data.get("count")
+
+    new_rating = Rating(total, count)
+    db.session.add(new_rating)
+    db.session.commit()
+
+    return jsonify("Rating added")
 
 if __name__ == "__main__":
     app.run(debug=True)
