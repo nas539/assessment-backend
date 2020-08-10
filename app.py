@@ -177,5 +177,10 @@ def rating_add(id):
 
     return jsonify("Rating added")
 
+@app.route("/movie/get/rating/<id>", methods=["GET"])
+def get_rating(id):
+    rating_data = db.session.query(Review).filter(Review.id == id).first()
+    return jsonify(review_data)
+
 if __name__ == "__main__":
     app.run(debug=True)
